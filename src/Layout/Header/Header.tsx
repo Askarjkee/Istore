@@ -1,11 +1,16 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
+import styled from "styled-components";
 
 
 import {AppBar, Button, Toolbar} from "@mui/material";
-import styled from "styled-components";
 import HomeIcon from '@mui/icons-material/Home';
+
+
 import {MuiAutocomplete} from "../../components/autocomplete/MuiAutocomplete";
+import {useAppSelector} from "../../redux/hooks";
+import {UserPanel} from "./UserPanel";
+
 
 const StyledAppBar = styled(({theme, ...props}) => <AppBar {...props}/>)`
 
@@ -27,7 +32,10 @@ const MyLink = styled(Link)`
   cursor: pointer;
 `
 
+
 export const Header = () => {
+	const {isAuth, photoURL} = useAppSelector(state => state.auth);
+
 	return (
 		<StyledAppBar color='transparent' position="static">
 			<StyledToolbar>
@@ -36,9 +44,14 @@ export const Header = () => {
 					iStore
 				</MyLink>
 				<MuiAutocomplete/>
-				<MyLink to='/login'>
-					<Button>Login</Button>
-				</MyLink>
+				{
+					isAuth ?
+						<UserPanel photoURL={photoURL}/>
+						:
+						<MyLink to='/login'>
+							<Button>Login</Button>
+						</MyLink>
+				}
 			</StyledToolbar>
 		</StyledAppBar>
 	);
