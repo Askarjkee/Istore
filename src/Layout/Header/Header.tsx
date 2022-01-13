@@ -17,19 +17,23 @@ const StyledAppBar = styled(({theme, ...props}) => <AppBar {...props}/>)`
 `;
 
 const StyledToolbar = styled(Toolbar)`
-  padding: 0 50px;
-  display: flex;
-  justify-content: space-between;
+  && {
+    padding: 0 50px;
+    display: flex;
+    justify-content: space-between;
+  }
 `
 
 const MyLink = styled(Link)`
-  text-decoration: none;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: #1976d2;
-  cursor: pointer;
+  && {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #1976d2;
+    cursor: pointer;
+  }
 `
 
 

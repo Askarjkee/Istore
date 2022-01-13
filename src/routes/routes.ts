@@ -1,7 +1,8 @@
 import {HomePage, Login, Profile} from "../pages";
 
+
 export const publicRoutes = [
-	{path: '/login', element: Login},
+	{path: '/login', element: Login}
 ]
 
 export const userRoutes = [
