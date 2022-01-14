@@ -12,13 +12,17 @@ export const Login = () => {
 	const dispatch = useAppDispatch();
 
 	const signInWithGoogle = async () => {
-		const { user } = await signInWithPopup(auth, provider);
-		dispatch(authUser({
-			isAuth: true,
-			displayName: user.displayName,
-			email: user.email,
-			photoURL: user.photoURL
-		}))
+		try {
+			const { user } = await signInWithPopup(auth, provider);
+			dispatch(authUser({
+				isAuth: true,
+				displayName: user.displayName,
+				email: user.email,
+				photoURL: user.photoURL
+			}))
+		} catch (e) {
+			console.error(e)
+		}
 	}
 	return (
 		<>

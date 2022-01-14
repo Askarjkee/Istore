@@ -1,9 +1,10 @@
 import React from 'react';
+import {CatalogList} from "../components/catalogList/CatalogList";
 
 export const HomePage = () => {
 	return (
 		<div>
-			home page
+			<CatalogList/>
 		</div>
 	);
 };

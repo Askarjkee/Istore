@@ -1,23 +1,21 @@
 import React, {FC, ReactNode} from 'react';
-import {Header} from "./Header/Header";
+import { Outlet } from 'react-router-dom';
 import styled from "styled-components";
-import {Subheader} from "./Subheader/Subheader";
 
-interface IProps {
-	children: ReactNode
-}
+import {Header} from "./Header/Header";
+import {Subheader} from "./Subheader/Subheader";
 
 const Container = styled.div`
   padding: 0 50px;
 `
 
-export const MainLayout: FC<IProps> = ({children}) => {
+export const MainLayout = () => {
 	return (
 		<>
 			<Header/>
 			<Subheader/>
 			<Container>
-				{children}
+				<Outlet />
 			</Container>
 		</>
 	);

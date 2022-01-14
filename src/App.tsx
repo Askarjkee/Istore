@@ -9,8 +9,8 @@ function App() {
 
 	return (
 		<Router>
-			<MainLayout>
-				<Routes>
+			<Routes>
+				<Route element={<MainLayout/>}>
 					{
 						isAuth ?
 							<>
@@ -41,8 +41,8 @@ function App() {
 								}
 							</>
 					}
-				</Routes>
-			</MainLayout>
+				</Route>
+			</Routes>
 		</Router>
 	);
 }
