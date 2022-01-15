@@ -1,7 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit'
 
 const initialState = [
-	{href: '', title: ''}
+	{catalog: '', href: '', title: ''}
 ]
 
 export const catalogSlice = createSlice({

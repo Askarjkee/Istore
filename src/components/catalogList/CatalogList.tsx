@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import styled from "styled-components";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import {getDocs, collection} from 'firebase/firestore';
 import {database} from '../../firebase-config';
 
@@ -8,16 +8,34 @@ import {database} from '../../firebase-config';
 import {useAppDispatch, useAppSelector} from "../../redux/hooks";
 import {setCatalogItems} from "../../features/product/ProductSlice";
 
+interface IProps {
+	$active?: boolean;
+}
+
 
 const CatalogTabsWrapper = styled.div`
-  margin-top: 30px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  height: 500px;
+  width: 300px;
 `
 
-const StyledLink = styled(Link)`
+const StyledLink = styled(Link)<IProps>`
   text-decoration: none;
+  border-radius: 10px;
+  height: 50px;
+  background-color: ${props => props.$active ? '#1976d2' : 'none'};
+  color: ${props => props.$active ? '#fff' : '#12212D'};
+  position: relative;
+  &:before {
+    content: '';
+	display: ${props => props.$active ? 'block' : 'none'};
+	width: 5px;
+	height: 100%;
+	background-color: #fff;
+	position: absolute;
+	left: 10px;
+  }
 `
 
 const CatalogTitle = styled.span`
@@ -25,18 +43,22 @@ const CatalogTitle = styled.span`
   font-size: 20px;
   line-height: 25px;
   color: #705658;
+  margin-left: 30px;
+  margin-bottom: 10px;
 `
 
 const CatalogItem = styled.span`
   font-weight: 500;
   font-size: 14px;
   line-height: 42px;
-  color: #12212D;
+  margin-left: 30px;
 `
 
 export const CatalogList = () => {
 	const dispatch = useAppDispatch();
 	const catalogList = useAppSelector(state => state.catalog);
+
+	const {pathname} = useLocation();
 
 	const catalogCollectionRef = collection(database, 'catalog');
 	useEffect(() => {
@@ -50,12 +72,10 @@ export const CatalogList = () => {
 
 	return (
 		<CatalogTabsWrapper>
-			<StyledLink to='#'>
-				<CatalogTitle>Каталог товаров</CatalogTitle>
-			</StyledLink>
+			<CatalogTitle>Каталог товаров</CatalogTitle>
 			{
-				catalogList.length > 0 && catalogList.map(catalog => {
-					return <StyledLink key={catalog.title} to={catalog.href}>
+				catalogList && catalogList.map(catalog => {
+					return <StyledLink $active={pathname === catalog.href} key={catalog.title} to={catalog.href}>
 						<CatalogItem>{catalog.title}</CatalogItem>
 					</StyledLink>
 				})
