@@ -1,51 +1,81 @@
 import React, {useEffect, useState} from 'react';
-import {ProductCard} from "./ProductCard";
-import styled from "styled-components";
 import {collection, getDocs} from "firebase/firestore";
-import {database} from "../../firebase-config";
+import styled from "styled-components";
 import {useLocation} from "react-router-dom";
-import {SliceString} from "../../helpers/sliceString";
 
-const ProductCardWrapper = styled.div`
-	&& {
-      display: grid;
-	  width: 100%;
-      grid-template-columns: repeat(4, 303px);
-      grid-template-rows: 1fr 1fr 1fr;
-      justify-content: space-between;
-	  margin-left: 30px;
-	}
+
+import {database} from "../../firebase-config";
+import {ProductHelper} from "../../helpers/productHelper";
+import {ProductCard} from "./ProductCard";
+import {useAppDispatch, useAppSelector} from "../../redux/hooks";
+import {Product, setProductItems} from "../../features/product/productSlice";
+
+const ProductHeaderWrapper = styled.div`
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
 `
 
-// TODO add redux not local state
+const ProductText = styled.span`
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 22px;
+  color: rgba(18, 33, 45, 0.7);
+`
+
+const ProductCardWrapper = styled.div`
+  && {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(4, 303px);
+    grid-template-rows: 1fr 1fr 1fr;
+    justify-content: space-between;
+    margin-left: 30px;
+  }
+`
 
 export const ProductList = () => {
-	const {pathname} = useLocation();
-	const catalogName = SliceString(pathname, 9);
-
-	const [products, setProducts] = useState([{}]);
-
-	const productCollectionRef = collection(database, catalogName);
+	const dispatch = useAppDispatch();
+	const productCollectionRef = collection(database, 'products');
 	useEffect(() => {
 		const getProducts = async () => {
 			const {docs} = await getDocs(productCollectionRef)
 			const res = docs.map((doc) => ({...doc.data()}))
-			setProducts(res)
+			dispatch(setProductItems(res))
 		}
 		getProducts()
-	}, [catalogName])
+	}, [])
+
+	// filter products by categories
+
+	const {pathname} = useLocation();
+	const catalogName = ProductHelper(pathname, 9);
+	const products = useAppSelector(state => state.product);
+	const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+	useEffect(() => {
+		const res = products.filter(p => p.catalog === catalogName);
+		setFilteredProducts(res);
+	}, [catalogName, products])
+
 	return (
-		<ProductCardWrapper>
-			{
-				products && products.map((item: any) =>
-					<ProductCard
-					key={item.title}
-					title={item.title}
-					imageSrc={item.imgSrc}
-					price={item.price}
-					status={item.quantity}/>)
-			}
-		</ProductCardWrapper>
+		<div>
+			<ProductHeaderWrapper>
+				<ProductText>
+					Найдено {filteredProducts.length} товаров
+				</ProductText>
+			</ProductHeaderWrapper>
+			<ProductCardWrapper>
+				{
+					filteredProducts && filteredProducts.map((item) =>
+						<ProductCard
+							key={item.title}
+							title={item.title}
+							imageSrc={item.imgSrc}
+							price={item.price}
+							status={+item.quantity}/>)
+				}
+			</ProductCardWrapper>
+		</div>
 	);
 };
 

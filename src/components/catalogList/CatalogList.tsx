@@ -6,7 +6,7 @@ import {database} from '../../firebase-config';
 
 
 import {useAppDispatch, useAppSelector} from "../../redux/hooks";
-import {setCatalogItems} from "../../features/product/ProductSlice";
+import {setCatalogItems} from "../../features/product/catalogSlice";
 
 interface IProps {
 	$active?: boolean;

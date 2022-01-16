@@ -6,13 +6,14 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import CardMedia from '@mui/material/CardMedia';
 import {Button} from "@mui/material";
+import {getItemStatus} from "../../helpers/productHelper";
 
 interface CardStatus {
 	$status: boolean;
 }
 
 interface IProps {
-	status: string;
+	status: number;
 	imageSrc: string;
 	title: string;
 	price: string;
@@ -61,8 +62,8 @@ export const ProductCard = ({status, imageSrc, title, price}: IProps) => {
 	return (
 		<StyledCard>
 			<CardContent>
-				<CardStatus $status>
-					{status}
+				<CardStatus $status={status > 0}>
+					{getItemStatus(status)}
 				</CardStatus>
 				<CardMedia
 					component="img"
