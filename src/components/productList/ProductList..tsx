@@ -5,15 +5,26 @@ import {useLocation} from "react-router-dom";
 
 
 import {database} from "../../firebase-config";
-import {ProductHelper} from "../../helpers/productHelper";
-import {ProductCard} from "./ProductCard";
+import {getFindStatus, ProductHelper} from "../../helpers/productHelper";
 import {useAppDispatch, useAppSelector} from "../../redux/hooks";
 import {Product, setProductItems} from "../../features/product/productSlice";
+import {Selector} from "../select/Select";
+import {ProductCard} from "./ProductCard";
+
+
+import { SelectChangeEvent } from '@mui/material/Select';
+import ProductSkeleton from "../skeleton/ProductSkeleton";
+
+const ProductListWrapper = styled.div`
+	width: 100%;
+`
 
 const ProductHeaderWrapper = styled.div`
-  height: 50px;
+  height: 70px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin-left: 30px;
 `
 
 const ProductText = styled.span`
@@ -23,7 +34,7 @@ const ProductText = styled.span`
   color: rgba(18, 33, 45, 0.7);
 `
 
-const ProductCardWrapper = styled.div`
+export const ProductCardWrapper = styled.div`
   && {
     display: grid;
     width: 100%;
@@ -31,20 +42,41 @@ const ProductCardWrapper = styled.div`
     grid-template-rows: 1fr 1fr 1fr;
     justify-content: space-between;
     margin-left: 30px;
+	margin-top: 30px;
   }
 `
 
 export const ProductList = () => {
+	const [loading, setLoading] = useState(false);
 	const dispatch = useAppDispatch();
 	const productCollectionRef = collection(database, 'products');
 	useEffect(() => {
 		const getProducts = async () => {
-			const {docs} = await getDocs(productCollectionRef)
-			const res = docs.map((doc) => ({...doc.data()}))
-			dispatch(setProductItems(res))
+			try {
+				setLoading(true)
+				const {docs} = await getDocs(productCollectionRef)
+				const res = docs.map((doc) => ({...doc.data()}))
+				dispatch(setProductItems(res))
+			} catch (e) {
+				console.error(e)
+			} finally {
+				setLoading(false)
+			}
 		}
 		getProducts()
 	}, [])
+
+	// filter method
+
+	const [filterMethod, setFilterMethod] = useState('')
+	const filterMethods = [
+		{value: 'По популярности'},
+		{value: 'По отзывам'},
+		{value: 'По цене'}
+	]
+	const handleChange = (event: SelectChangeEvent) => {
+		setFilterMethod(event.target.value)
+	}
 
 	// filter products by categories
 
@@ -57,12 +89,27 @@ export const ProductList = () => {
 		setFilteredProducts(res);
 	}, [catalogName, products])
 
+
+	if (loading) {
+		return <ProductSkeleton
+					value={12}
+					component={"product"}/>
+	}
+
 	return (
-		<div>
+		<ProductListWrapper>
 			<ProductHeaderWrapper>
 				<ProductText>
-					Найдено {filteredProducts.length} товаров
+					{
+						getFindStatus(filteredProducts.length)
+					}
 				</ProductText>
+				<Selector
+					items={filterMethods}
+					label="Сортировка"
+					handleChange={handleChange}
+					currentItem={filterMethod}
+					/>
 			</ProductHeaderWrapper>
 			<ProductCardWrapper>
 				{
@@ -75,7 +122,7 @@ export const ProductList = () => {
 							status={+item.quantity}/>)
 				}
 			</ProductCardWrapper>
-		</div>
+		</ProductListWrapper>
 	);
 };
 

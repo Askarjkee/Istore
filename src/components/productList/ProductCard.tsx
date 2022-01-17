@@ -52,35 +52,36 @@ const CardPrice = styled.span`
 `
 
 const CardActionsWrapper = styled(CardActions)`
-	&& {
-	  justify-content: space-between;
-	}
+  && {
+    justify-content: space-between;
+  }
 `
 
 
 export const ProductCard = ({status, imageSrc, title, price}: IProps) => {
 	return (
-		<StyledCard>
-			<CardContent>
-				<CardStatus $status={status > 0}>
-					{getItemStatus(status)}
-				</CardStatus>
-				<CardMedia
-					component="img"
-					sx={{height: '100%', marginTop: '10px', marginBottom: '20px'}}
-					image={imageSrc}
-					alt="Paella dish"
-				/>
-				<CardName>
-					{title}
-				</CardName>
-			</CardContent>
-			<CardActionsWrapper>
-				<CardPrice>
-					Цена {price} ₽
-				</CardPrice>
-				<Button>Купить</Button>
-			</CardActionsWrapper>
-		</StyledCard>
+			<StyledCard>
+				<CardContent>
+					<CardStatus $status={status > 0}>
+						{getItemStatus(status)}
+					</CardStatus>
+					<CardMedia
+						component="img"
+						sx={{height: '100%', marginTop: '10px', marginBottom: '20px'}}
+						image={imageSrc}
+						alt="Paella dish"
+					/>
+					<CardName>
+						{title}
+					</CardName>
+				</CardContent>
+				<CardActionsWrapper>
+					<CardPrice>
+						Цена {price} ₽
+					</CardPrice>
+					<Button>Купить</Button>
+				</CardActionsWrapper>
+			</StyledCard>
+
 	);
 };

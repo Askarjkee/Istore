@@ -7,7 +7,7 @@ import {ProductList} from "../components/productList/ProductList.";
 
 
 const CatalogItemsWrapper = styled.section`
-  
+  padding-top: 70px;
 `
 
 const CatalogContentWrapper = styled.div`
@@ -15,7 +15,7 @@ const CatalogContentWrapper = styled.div`
 `
 
 export const CatalogItems = () => {
-	const {pathname} = useLocation();
+
 	return (
 		<CatalogItemsWrapper>
 			<CatalogContentWrapper>
