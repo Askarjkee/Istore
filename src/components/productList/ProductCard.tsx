@@ -77,7 +77,7 @@ export const ProductCard = ({status, imageSrc, title, price}: IProps) => {
 				</CardContent>
 				<CardActionsWrapper>
 					<CardPrice>
-						Цена {price} ₽
+						Цена {price} ₸
 					</CardPrice>
 					<Button>Купить</Button>
 				</CardActionsWrapper>

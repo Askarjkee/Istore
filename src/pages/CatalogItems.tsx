@@ -7,7 +7,7 @@ import {ProductList} from "../components/productList/ProductList.";
 
 
 const CatalogItemsWrapper = styled.section`
-  padding-top: 70px;
+  padding-top: 30px;
 `
 
 const CatalogContentWrapper = styled.div`

@@ -7,7 +7,11 @@ import {useLocation} from "react-router-dom";
 import {database} from "../../firebase-config";
 import {getFindStatus, ProductHelper} from "../../helpers/productHelper";
 import {useAppDispatch, useAppSelector} from "../../redux/hooks";
-import {Product, setProductItems} from "../../features/product/productSlice";
+import {
+	filterProductItemsByCategories,
+	filterProductItemsBySelect,
+	setProductItems
+} from "../../features/product/productSlice";
 import {Selector} from "../select/Select";
 import {ProductCard} from "./ProductCard";
 
@@ -37,10 +41,9 @@ const ProductText = styled.span`
 export const ProductCardWrapper = styled.div`
   && {
     display: grid;
-    width: 100%;
-    grid-template-columns: repeat(4, 303px);
+    grid-template-columns: repeat(4, 1fr);
     grid-template-rows: 1fr 1fr 1fr;
-    justify-content: space-between;
+	row-gap: 20px;
     margin-left: 30px;
 	margin-top: 30px;
   }
@@ -70,24 +73,26 @@ export const ProductList = () => {
 
 	const [filterMethod, setFilterMethod] = useState('')
 	const filterMethods = [
-		{value: 'По популярности'},
-		{value: 'По отзывам'},
-		{value: 'По цене'}
+		{value: 'По убыванию'},
+		{value: 'По возрастанию'}
 	]
 	const handleChange = (event: SelectChangeEvent) => {
 		setFilterMethod(event.target.value)
 	}
+	useEffect(() => {
+		if (filterMethod) {
+			dispatch(filterProductItemsBySelect(filterMethod))
+		}
+	}, [filterMethod])
 
 	// filter products by categories
 
 	const {pathname} = useLocation();
 	const catalogName = ProductHelper(pathname, 9);
-	const products = useAppSelector(state => state.product);
-	const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+	const filteredProducts = useAppSelector(state => state.product.FilteredProduct);
 	useEffect(() => {
-		const res = products.filter(p => p.catalog === catalogName);
-		setFilteredProducts(res);
-	}, [catalogName, products])
+		dispatch(filterProductItemsByCategories(catalogName))
+	}, [catalogName])
 
 
 	if (loading) {
