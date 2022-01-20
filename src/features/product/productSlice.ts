@@ -1,4 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit'
+import {AppDispatch} from "../../redux/store";
+import {collection, getDocs} from "firebase/firestore";
+import {database} from "../../firebase-config";
 
 export interface Product {
 	catalog: string,
@@ -9,12 +12,16 @@ export interface Product {
 }
 
 interface IState {
-	Product: Product[],
-	FilteredProduct: Product[]
+	isLoading: boolean;
+	isError: boolean;
+	product: Product[],
+	filteredProduct: Product[]
 }
 
 const initialState: IState = {
-	Product: [
+	isLoading: false,
+	isError: false,
+	product: [
 		{
 			catalog: '',
 			imgSrc: '',
@@ -23,7 +30,7 @@ const initialState: IState = {
 			title: ''
 		}
 	],
-	FilteredProduct: [
+	filteredProduct: [
 		{
 			catalog: '',
 			imgSrc: '',
@@ -38,19 +45,28 @@ export const productSlice = createSlice({
 	name: 'product',
 	initialState,
 	reducers: {
-		setProductItems: (state, action) => {
-			state.Product = action.payload
+		productFetching: (state) => {
+			state.isLoading = true;
+		},
+		productFetchingSuccess: (state, action) => {
+			state.isLoading = false;
+			state.isError = false;
+			state.product = action.payload;
+		},
+		productFetchingError: (state) => {
+			state.isLoading = false;
+			state.isError = true;
 		},
 		filterProductItemsByCategories: (state, action) => {
-			state.FilteredProduct = state.Product.filter(p => p.catalog === action.payload);
+			state.filteredProduct = state.product.filter(p => p.catalog === action.payload);
 		},
 		filterProductItemsBySelect: (state, action) => {
 			switch (action.payload) {
 				case 'По убыванию':
-					state.FilteredProduct = state.FilteredProduct.sort((a, b) => a.price > b.price ? 1 : -1);
+					state.filteredProduct = state.filteredProduct.sort((a, b) => a.price > b.price ? 1 : -1);
 					break;
 				case 'По возрастанию':
-					state.FilteredProduct = state.FilteredProduct.sort((a, b) => a.price > b.price ? -1 : 1);
+					state.filteredProduct = state.filteredProduct.sort((a, b) => a.price > b.price ? -1 : 1);
 					break;
 				default:
 					return state;
@@ -59,4 +75,23 @@ export const productSlice = createSlice({
 	},
 })
 
-export const {setProductItems, filterProductItemsByCategories, filterProductItemsBySelect} = productSlice.actions;
+// thunk
+
+const productCollectionRef = collection(database, 'products');
+export const getProducts = () => async (dispatch: AppDispatch) => {
+	try {
+		dispatch(productSlice.actions.productFetching())
+		const {docs} = await getDocs(productCollectionRef)
+		const res = docs.map((doc) => ({...doc.data()}))
+		dispatch(productSlice.actions.productFetchingSuccess(res))
+	} catch (e) {
+		dispatch(productSlice.actions.productFetchingError())
+		console.error(e)
+	}
+}
+
+export const {
+	filterProductItemsByCategories,
+	filterProductItemsBySelect
+} = productSlice.actions;
+

@@ -1,26 +1,23 @@
 import React, {useEffect, useState} from 'react';
-import {collection, getDocs} from "firebase/firestore";
 import styled from "styled-components";
 import {useLocation} from "react-router-dom";
 
 
-import {database} from "../../firebase-config";
 import {getFindStatus, ProductHelper} from "../../helpers/productHelper";
 import {useAppDispatch, useAppSelector} from "../../redux/hooks";
 import {
 	filterProductItemsByCategories,
-	filterProductItemsBySelect,
-	setProductItems
+	filterProductItemsBySelect
 } from "../../features/product/productSlice";
 import {Selector} from "../select/Select";
 import {ProductCard} from "./ProductCard";
 
 
-import { SelectChangeEvent } from '@mui/material/Select';
+import {SelectChangeEvent} from '@mui/material/Select';
 import ProductSkeleton from "../skeleton/ProductSkeleton";
 
 const ProductListWrapper = styled.div`
-	width: 100%;
+  width: 100%;
 `
 
 const ProductHeaderWrapper = styled.div`
@@ -43,34 +40,17 @@ export const ProductCardWrapper = styled.div`
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: 1fr 1fr 1fr;
-	row-gap: 20px;
+    row-gap: 20px;
     margin-left: 30px;
-	margin-top: 30px;
+    margin-top: 30px;
   }
 `
 
 export const ProductList = () => {
-	const [loading, setLoading] = useState(false);
+	const {isLoading, isError} = useAppSelector(state => state.product);
 	const dispatch = useAppDispatch();
-	const productCollectionRef = collection(database, 'products');
-	useEffect(() => {
-		const getProducts = async () => {
-			try {
-				setLoading(true)
-				const {docs} = await getDocs(productCollectionRef)
-				const res = docs.map((doc) => ({...doc.data()}))
-				dispatch(setProductItems(res))
-			} catch (e) {
-				console.error(e)
-			} finally {
-				setLoading(false)
-			}
-		}
-		getProducts()
-	}, [])
 
 	// filter method
-
 	const [filterMethod, setFilterMethod] = useState('')
 	const filterMethods = [
 		{value: 'По убыванию'},
@@ -86,19 +66,22 @@ export const ProductList = () => {
 	}, [filterMethod])
 
 	// filter products by categories
-
 	const {pathname} = useLocation();
 	const catalogName = ProductHelper(pathname, 9);
-	const filteredProducts = useAppSelector(state => state.product.FilteredProduct);
+	const filteredProducts = useAppSelector(state => state.product.filteredProduct);
 	useEffect(() => {
 		dispatch(filterProductItemsByCategories(catalogName))
 	}, [catalogName])
 
 
-	if (loading) {
+	if (isLoading) {
 		return <ProductSkeleton
-					value={12}
-					component={"product"}/>
+			value={12}
+			component={"product"}/>
+	}
+	// TODO add error page
+	if (isError) {
+		return <h2>something wrong...</h2>
 	}
 
 	return (
@@ -114,11 +97,11 @@ export const ProductList = () => {
 					label="Сортировка"
 					handleChange={handleChange}
 					currentItem={filterMethod}
-					/>
+				/>
 			</ProductHeaderWrapper>
 			<ProductCardWrapper>
 				{
-					filteredProducts && filteredProducts.map((item) =>
+					filteredProducts.length > 0 && filteredProducts.map((item) =>
 						<ProductCard
 							key={item.title}
 							title={item.title}

@@ -1,12 +1,19 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {MainLayout} from "./Layout/MainLayout";
 import {BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom";
 import {publicRoutes, userRoutes} from "./routes/routes";
-import {useAppSelector} from "./redux/hooks";
+import {useAppDispatch, useAppSelector} from "./redux/hooks";
+import {getProducts} from "./features/product/productSlice";
 
 function App() {
 	const isAuth = useAppSelector(state => state.auth.isAuth);
 
+	const dispatch = useAppDispatch();
+	useEffect(() => {
+		dispatch(getProducts());
+	}, [])
+
+	// TODO zx
 	return (
 		<Router>
 			<Routes>
