@@ -8,7 +8,8 @@ export interface Product {
 	imgSrc: string,
 	price: string,
 	quantity: string,
-	title: string
+	title: string,
+	id: string
 }
 
 interface IState {
@@ -27,7 +28,8 @@ const initialState: IState = {
 			imgSrc: '',
 			price: '',
 			quantity: '',
-			title: ''
+			title: '',
+			id: ''
 		}
 	],
 	filteredProduct: [
@@ -36,7 +38,8 @@ const initialState: IState = {
 			imgSrc: '',
 			price: '',
 			quantity: '',
-			title: ''
+			title: '',
+			id: ''
 		}
 	]
 }
@@ -82,7 +85,8 @@ export const getProducts = () => async (dispatch: AppDispatch) => {
 	try {
 		dispatch(productSlice.actions.productFetching())
 		const {docs} = await getDocs(productCollectionRef)
-		const res = docs.map((doc) => ({...doc.data()}))
+		console.log(docs)
+		const res = docs.map((doc) => ({...doc.data(), id: doc.id}))
 		dispatch(productSlice.actions.productFetchingSuccess(res))
 	} catch (e) {
 		dispatch(productSlice.actions.productFetchingError())
