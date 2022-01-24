@@ -1,5 +1,5 @@
 
-export const ProductHelper = (str: string, from: number) : string => {
+export const sliceString = (str: string, from: number) : string => {
 	return str.substr(from)
 }
 

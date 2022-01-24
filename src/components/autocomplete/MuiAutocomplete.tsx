@@ -11,6 +11,14 @@ const MyTextField = styled(TextField)`
   }
 `
 
+const StyledLink = styled(Link)`
+  && {
+    img {
+      margin-right: 10px;
+    }
+  }
+`
+
 
 export const MuiAutocomplete = () => {
 	const {product} = useAppSelector(state => state.product);
@@ -23,9 +31,15 @@ export const MuiAutocomplete = () => {
 			renderOption={(props, option) => {
 				return (
 					<li {...props}>
-						<Link to={`/test/${option.id}`}>
+						<StyledLink to={`/card/${option.id}`}>
+							<img
+								loading="lazy"
+								width="20"
+								src={option.imgSrc}
+								alt={option.title}
+							/>
 							{option.title}
-						</Link>
+						</StyledLink>
 					</li>
 				)
 			}}

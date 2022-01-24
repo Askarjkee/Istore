@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import styled from "styled-components";
-import {useLocation} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 
 
-import {getFindStatus, ProductHelper} from "../../helpers/productHelper";
+import {getFindStatus, sliceString} from "../../helpers/productHelper";
 import {useAppDispatch, useAppSelector} from "../../redux/hooks";
 import {
 	filterProductItemsByCategories,
@@ -46,6 +46,12 @@ export const ProductCardWrapper = styled.div`
   }
 `
 
+const StyledLink = styled(Link)`
+	&& {
+	  text-decoration: none;
+	}
+`
+
 export const ProductList = () => {
 	const {isLoading, isError} = useAppSelector(state => state.product);
 	const dispatch = useAppDispatch();
@@ -67,7 +73,7 @@ export const ProductList = () => {
 
 	// filter products by categories
 	const {pathname} = useLocation();
-	const catalogName = ProductHelper(pathname, 9);
+	const catalogName = sliceString(pathname, 9);
 	const filteredProducts = useAppSelector(state => state.product.filteredProduct);
 	useEffect(() => {
 		dispatch(filterProductItemsByCategories(catalogName))
@@ -102,12 +108,14 @@ export const ProductList = () => {
 			<ProductCardWrapper>
 				{
 					filteredProducts.length > 0 && filteredProducts.map((item) =>
-						<ProductCard
-							key={item.title}
-							title={item.title}
-							imageSrc={item.imgSrc}
-							price={item.price}
-							status={+item.quantity}/>)
+						<StyledLink key={item.title} to={`/card/${item.id}`}>
+							<ProductCard
+								title={item.title}
+								imageSrc={item.imgSrc}
+								price={item.price}
+								status={+item.quantity}/>
+						</StyledLink>
+					)
 				}
 			</ProductCardWrapper>
 		</ProductListWrapper>
