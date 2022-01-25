@@ -85,7 +85,6 @@ export const getProducts = () => async (dispatch: AppDispatch) => {
 	try {
 		dispatch(productSlice.actions.productFetching())
 		const {docs} = await getDocs(productCollectionRef)
-		console.log(docs)
 		const res = docs.map((doc) => ({...doc.data(), id: doc.id}))
 		dispatch(productSlice.actions.productFetchingSuccess(res))
 	} catch (e) {

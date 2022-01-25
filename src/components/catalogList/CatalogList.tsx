@@ -1,13 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import styled from "styled-components";
 import {Link, useLocation} from "react-router-dom";
-import {getDocs, collection} from 'firebase/firestore';
-import {database} from '../../firebase-config';
 
-
+import {Box} from "@mui/material";
 import {useAppDispatch, useAppSelector} from "../../redux/hooks";
-import {setCatalogItems} from "../../features/product/catalogSlice";
+import {getCatalog} from "../../features/product/catalogSlice";
 import ProductSkeleton from "../skeleton/ProductSkeleton";
+
 
 interface IProps {
 	$active?: boolean;
@@ -57,41 +56,30 @@ const CatalogItem = styled.span`
 `
 
 export const CatalogList = () => {
-	const [loading, setLoading] = useState(false);
 	const dispatch = useAppDispatch();
-	const catalogList = useAppSelector(state => state.catalog);
-
+	const { catalog, isLoading, error } = useAppSelector(state => state.catalog);
 	const {pathname} = useLocation();
 
-	const catalogCollectionRef = collection(database, 'catalog');
 	useEffect(() => {
-		const getPosts = async () => {
-			try {
-				setLoading(true);
-				const {docs} = await getDocs(catalogCollectionRef)
-				const res = docs.map((doc) => ({...doc.data()}))
-				dispatch(setCatalogItems(res))
-			} catch (e) {
-				console.error(e)
-			} finally {
-				setLoading(false)
-			}
-		}
-		getPosts()
+		dispatch(getCatalog())
 	}, [])
 
-	if (loading) {
+	if (isLoading) {
 		return <ProductSkeleton
 				component="catalog"
 				value={5}
 				/>
 	}
 
+	if (error) {
+		return <Box>{error}</Box>
+	}
+
 	return (
 		<CatalogTabsWrapper>
 			<CatalogTitle>Каталог товаров</CatalogTitle>
 			{
-				catalogList && catalogList.map(catalog => {
+				catalog && catalog.map(catalog => {
 					return <StyledLink $active={pathname === catalog.href} key={catalog.title} to={catalog.href}>
 						<CatalogItem>{catalog.title}</CatalogItem>
 					</StyledLink>

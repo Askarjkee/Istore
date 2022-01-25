@@ -27,4 +27,6 @@ export const authSlice = createSlice({
 	},
 })
 
+
+
 export const { authUser, logoutUser } = authSlice.actions;
