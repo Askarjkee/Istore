@@ -53,7 +53,7 @@ export const Header = () => {
 						<UserPanel photoURL={photoURL}/>
 						:
 						<MyLink to='/login'>
-							<Button>Login</Button>
+							<Button variant="outlined">Login</Button>
 						</MyLink>
 				}
 			</StyledToolbar>
