@@ -5,7 +5,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import CardMedia from '@mui/material/CardMedia';
-import {Button} from "@mui/material";
+import {Box, Button, Rating} from "@mui/material";
 import {getItemStatus} from "../../helpers/productHelper";
 
 interface CardStatus {
@@ -17,6 +17,7 @@ interface IProps {
 	imageSrc: string;
 	title: string;
 	price: string;
+	rating: number | null;
 }
 
 
@@ -57,31 +58,47 @@ const CardActionsWrapper = styled(CardActions)`
   }
 `
 
+const StyledRating = styled(Rating)`
+  && {
+    margin-top: 10px;
+  }
+`
 
-export const ProductCard = ({status, imageSrc, title, price}: IProps) => {
+const ColumnWrapper = styled(Box)`
+  && {
+    display: flex;
+    flex-direction: column;
+  }
+`
+
+
+export const ProductCard = ({status, imageSrc, title, price, rating}: IProps) => {
 	return (
-			<StyledCard>
-				<CardContent>
-					<CardStatus $status={status > 0}>
-						{getItemStatus(status)}
-					</CardStatus>
-					<CardMedia
-						component="img"
-						sx={{height: '100%', marginTop: '10px', marginBottom: '20px'}}
-						image={imageSrc}
-						alt="Paella dish"
-					/>
+		<StyledCard>
+			<CardContent>
+				<CardStatus $status={status > 0}>
+					{getItemStatus(status)}
+				</CardStatus>
+				<CardMedia
+					component="img"
+					sx={{height: '100%', marginTop: '10px', marginBottom: '20px'}}
+					image={imageSrc}
+					alt="Paella dish"
+				/>
+				<ColumnWrapper>
 					<CardName>
 						{title}
 					</CardName>
-				</CardContent>
-				<CardActionsWrapper>
-					<CardPrice>
-						Цена {price} ₸
-					</CardPrice>
-					<Button>Купить</Button>
-				</CardActionsWrapper>
-			</StyledCard>
+					<StyledRating name="rating" value={rating} readOnly/>
+				</ColumnWrapper>
+			</CardContent>
+			<CardActionsWrapper>
+				<CardPrice>
+					Цена {price} ₸
+				</CardPrice>
+				<Button>Купить</Button>
+			</CardActionsWrapper>
+		</StyledCard>
 
 	);
 };

@@ -110,6 +110,7 @@ export const ProductList = () => {
 					filteredProducts.length > 0 && filteredProducts.map((item) =>
 						<StyledLink key={item.title} to={`/card/${item.id}`}>
 							<ProductCard
+								rating={item.rating}
 								title={item.title}
 								imageSrc={item.imgSrc}
 								price={item.price}

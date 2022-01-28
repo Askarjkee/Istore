@@ -9,7 +9,9 @@ export interface Product {
 	price: string,
 	quantity: string,
 	title: string,
-	id: string
+	id: string,
+	rating: number | null,
+	images?: string[]
 }
 
 interface IState {
@@ -29,7 +31,9 @@ const initialState: IState = {
 			price: '',
 			quantity: '',
 			title: '',
-			id: ''
+			id: '',
+			rating: null,
+			images: []
 		}
 	],
 	filteredProduct: [
@@ -39,7 +43,9 @@ const initialState: IState = {
 			price: '',
 			quantity: '',
 			title: '',
-			id: ''
+			id: '',
+			rating: null,
+			images: []
 		}
 	]
 }
