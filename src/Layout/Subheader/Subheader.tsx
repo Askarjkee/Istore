@@ -1,18 +1,22 @@
 import React from 'react';
 import styled from "styled-components";
+import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import {Link, useLocation} from "react-router-dom";
+import {Box} from "@mui/material";
 
 interface ItemProps {
 	$active?: boolean;
 }
 
-const SubheaderWrapper = styled.div`
+const SubheaderWrapper = styled(Box)`
   height: 70px;
   background-color: #1976d2;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 50px;
 `
+
 
 const SubheaderItem = styled(Link)<ItemProps>`
   color: #fff;
@@ -41,9 +45,9 @@ const menuItems = [
 
 export const Subheader = () => {
 	const { pathname } = useLocation();
-
 	return (
 		<SubheaderWrapper>
+			<Box>
 			{
 				menuItems.map(item => {
 					return (
@@ -53,6 +57,12 @@ export const Subheader = () => {
 					)
 				})
 			}
+			</Box>
+			<Box>
+				<Link to="/basket">
+					<ShoppingBasketIcon sx={{color: '#fff', cursor: 'pointer'}}/>
+				</Link>
+			</Box>
 		</SubheaderWrapper>
 	);
 };

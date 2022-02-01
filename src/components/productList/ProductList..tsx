@@ -7,14 +7,16 @@ import {getFindStatus, sliceString} from "../../helpers/productHelper";
 import {useAppDispatch, useAppSelector} from "../../redux/hooks";
 import {
 	filterProductItemsByCategories,
-	filterProductItemsBySelect
+	filterProductItemsBySelect, Product
 } from "../../features/product/productSlice";
+import {addProduct} from "../../features/product/basketSlice";
 import {Selector} from "../select/Select";
 import {ProductCard} from "./ProductCard";
 
 
 import {SelectChangeEvent} from '@mui/material/Select';
 import ProductSkeleton from "../skeleton/ProductSkeleton";
+
 
 const ProductListWrapper = styled.div`
   width: 100%;
@@ -47,9 +49,9 @@ export const ProductCardWrapper = styled.div`
 `
 
 const StyledLink = styled(Link)`
-	&& {
-	  text-decoration: none;
-	}
+  && {
+    text-decoration: none;
+  }
 `
 
 export const ProductList = () => {
@@ -79,6 +81,9 @@ export const ProductList = () => {
 		dispatch(filterProductItemsByCategories(catalogName))
 	}, [catalogName])
 
+	const addProductToBasket = (item: Product) => {
+		dispatch(addProduct(item))
+	}
 
 	if (isLoading) {
 		return <ProductSkeleton
@@ -90,6 +95,7 @@ export const ProductList = () => {
 		return <h2>something wrong...</h2>
 	}
 
+	// TODO FIX button add to card
 	return (
 		<ProductListWrapper>
 			<ProductHeaderWrapper>
@@ -110,6 +116,7 @@ export const ProductList = () => {
 					filteredProducts.length > 0 && filteredProducts.map((item) =>
 						<StyledLink key={item.title} to={`/card/${item.id}`}>
 							<ProductCard
+								addProduct={() => addProductToBasket(item)}
 								rating={item.rating}
 								title={item.title}
 								imageSrc={item.imgSrc}

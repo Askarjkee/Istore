@@ -8,6 +8,7 @@ import CardMedia from '@mui/material/CardMedia';
 import {Box, Button, Rating} from "@mui/material";
 import {getItemStatus} from "../../helpers/productHelper";
 
+
 interface CardStatus {
 	$status: boolean;
 }
@@ -18,6 +19,7 @@ interface IProps {
 	title: string;
 	price: string;
 	rating: number | null;
+	addProduct: () => void;
 }
 
 
@@ -72,7 +74,7 @@ const ColumnWrapper = styled(Box)`
 `
 
 
-export const ProductCard = ({status, imageSrc, title, price, rating}: IProps) => {
+export const ProductCard = ({status, imageSrc, title, price, rating, addProduct}: IProps) => {
 	return (
 		<StyledCard>
 			<CardContent>
@@ -96,7 +98,7 @@ export const ProductCard = ({status, imageSrc, title, price, rating}: IProps) =>
 				<CardPrice>
 					Цена {price} ₸
 				</CardPrice>
-				<Button>Купить</Button>
+				<Button onClick={addProduct}>Купить</Button>
 			</CardActionsWrapper>
 		</StyledCard>
 

@@ -36,7 +36,6 @@ const ProductPrice = styled(Box)`
 
 export const ProductItem = () => {
 	const [product, setProduct] = useState<any>({});
-	console.log(product)
 	const [isLoading, setIsLoading] = useState(false);
 	const { pathname } = useLocation();
 	const id = sliceString(pathname, 6);
@@ -60,7 +59,6 @@ export const ProductItem = () => {
 
 	const [value, setValue] = useState<number | null>(product.rating);
 
-	// TODO add product rating onChange
 
 	if (isLoading) {
 		return <span>Loading...</span>
@@ -76,11 +74,10 @@ export const ProductItem = () => {
 					</ProductPrice>
 					<Rating
 						name="rating"
-						value={product.rating}
-						readOnly
-						// onChange={(event, newValue) => {
-						// 	setValue(newValue);
-						// }}
+						value={value}
+						onChange={(event, newValue) => {
+							setValue(newValue);
+						}}
 					/>
 				</ProductDetails>
 			</ProductHeaderWrapper>
