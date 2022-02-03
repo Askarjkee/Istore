@@ -7,6 +7,7 @@ import CardActions from '@mui/material/CardActions';
 import CardMedia from '@mui/material/CardMedia';
 import {Box, Button, Rating} from "@mui/material";
 import {getItemStatus} from "../../helpers/productHelper";
+import {increase} from "../../features/product/basketSlice";
 
 
 interface CardStatus {
@@ -20,6 +21,8 @@ interface IProps {
 	price: string;
 	rating: number | null;
 	addProduct: () => void;
+	isItemInBasket: boolean;
+	increase: () => void;
 }
 
 
@@ -74,7 +77,7 @@ const ColumnWrapper = styled(Box)`
 `
 
 
-export const ProductCard = ({status, imageSrc, title, price, rating, addProduct}: IProps) => {
+export const ProductCard = ({status, imageSrc, title, price, rating, addProduct, isItemInBasket, increase}: IProps) => {
 	return (
 		<StyledCard>
 			<CardContent>
@@ -85,7 +88,7 @@ export const ProductCard = ({status, imageSrc, title, price, rating, addProduct}
 					component="img"
 					sx={{height: '100%', marginTop: '10px', marginBottom: '20px'}}
 					image={imageSrc}
-					alt="Paella dish"
+					alt="product"
 				/>
 				<ColumnWrapper>
 					<CardName>
@@ -98,7 +101,12 @@ export const ProductCard = ({status, imageSrc, title, price, rating, addProduct}
 				<CardPrice>
 					Цена {price} ₸
 				</CardPrice>
-				<Button onClick={addProduct}>Купить</Button>
+				{
+					isItemInBasket ?
+						<Button onClick={increase}>+</Button>
+						:
+						<Button onClick={addProduct}>Купить</Button>
+				}
 			</CardActionsWrapper>
 		</StyledCard>
 

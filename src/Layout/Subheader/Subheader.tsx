@@ -3,6 +3,7 @@ import styled from "styled-components";
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import {Link, useLocation} from "react-router-dom";
 import {Box} from "@mui/material";
+import {useAppSelector} from "../../redux/hooks";
 
 interface ItemProps {
 	$active?: boolean;
@@ -45,6 +46,7 @@ const menuItems = [
 
 export const Subheader = () => {
 	const { pathname } = useLocation();
+	const { basket } = useAppSelector(state => state.basket);
 	return (
 		<SubheaderWrapper>
 			<Box>
@@ -61,6 +63,9 @@ export const Subheader = () => {
 			<Box>
 				<Link to="/basket">
 					<ShoppingBasketIcon sx={{color: '#fff', cursor: 'pointer'}}/>
+					<Box style={{color: '#fff'}}>
+						{basket.length}
+					</Box>
 				</Link>
 			</Box>
 		</SubheaderWrapper>

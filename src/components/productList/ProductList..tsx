@@ -9,7 +9,7 @@ import {
 	filterProductItemsByCategories,
 	filterProductItemsBySelect, Product
 } from "../../features/product/productSlice";
-import {addProduct} from "../../features/product/basketSlice";
+import {addProduct, increase} from "../../features/product/basketSlice";
 import {Selector} from "../select/Select";
 import {ProductCard} from "./ProductCard";
 
@@ -81,10 +81,16 @@ export const ProductList = () => {
 		dispatch(filterProductItemsByCategories(catalogName))
 	}, [catalogName])
 
+	// basket
 	const addProductToBasket = (item: Product) => {
 		dispatch(addProduct(item))
 	}
+	const inc = (item: Product) => {
+		dispatch(increase(item))
+	}
 
+	const {basket} = useAppSelector(state => state.basket);
+	console.log(basket)
 	if (isLoading) {
 		return <ProductSkeleton
 			value={12}
@@ -113,17 +119,22 @@ export const ProductList = () => {
 			</ProductHeaderWrapper>
 			<ProductCardWrapper>
 				{
-					filteredProducts.length > 0 && filteredProducts.map((item) =>
-						<StyledLink key={item.title} to={`/card/${item.id}`}>
+					filteredProducts.length > 0 && filteredProducts.map((product) => {
+						const isItemInBasket = basket.some(item => item.id === product.id);
+						return (
+							// <StyledLink key={item.title} to={`/card/${item.id}`}>
 							<ProductCard
-								addProduct={() => addProductToBasket(item)}
-								rating={item.rating}
-								title={item.title}
-								imageSrc={item.imgSrc}
-								price={item.price}
-								status={+item.quantity}/>
-						</StyledLink>
-					)
+								isItemInBasket={isItemInBasket}
+								increase={() => inc(product)}
+								addProduct={() => addProductToBasket(product)}
+								rating={product.rating}
+								title={product.title}
+								imageSrc={product.imgSrc}
+								price={product.price}
+								status={+product.quantity}/>
+							// </StyledLink>
+						)
+					})
 				}
 			</ProductCardWrapper>
 		</ProductListWrapper>
