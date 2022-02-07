@@ -14,7 +14,7 @@ export const basketSlice = createSlice({
 	initialState,
 	reducers: {
 		addProduct: (state, action) => {
-			const { inBasket } = action.payload;
+			const {inBasket} = action.payload;
 			const newItem = {
 				...action.payload,
 				inBasket: inBasket + 1
@@ -22,7 +22,7 @@ export const basketSlice = createSlice({
 			state.basket.push(newItem)
 		},
 		increase: (state, action) => {
-			const { id } = action.payload;
+			const {id} = action.payload;
 			const isItemInArray = state.basket.some(item => item.id === id);
 			if (isItemInArray) {
 				state.basket = state.basket.map(product => {
@@ -39,17 +39,15 @@ export const basketSlice = createSlice({
 			}
 		},
 		decrease: (state, action) => {
-			const { id } = action.payload;
+			const {id} = action.payload;
 			const productInBasket = state.basket.find(product => product.id === id);
 			if (productInBasket) {
 				if (productInBasket.inBasket > 1) {
 					state.basket = state.basket.map(product => {
 						if (product.id === id) {
-							if (product.inBasket > 1) {
-								return {
-									...product,
-									inBasket: product.inBasket - 1
-								}
+							return {
+								...product,
+								inBasket: product.inBasket - 1
 							}
 						}
 						return product
