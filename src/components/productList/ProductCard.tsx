@@ -23,6 +23,7 @@ interface IProps {
 	addProduct: () => void;
 	isItemInBasket: boolean;
 	increase: () => void;
+	decrease: () => void;
 }
 
 
@@ -77,7 +78,17 @@ const ColumnWrapper = styled(Box)`
 `
 
 
-export const ProductCard = ({status, imageSrc, title, price, rating, addProduct, isItemInBasket, increase}: IProps) => {
+export const ProductCard = ({
+								status,
+								imageSrc,
+								title,
+								price,
+								rating,
+								addProduct,
+								isItemInBasket,
+								increase,
+								decrease
+							}: IProps) => {
 	return (
 		<StyledCard>
 			<CardContent>
@@ -103,7 +114,10 @@ export const ProductCard = ({status, imageSrc, title, price, rating, addProduct,
 				</CardPrice>
 				{
 					isItemInBasket ?
-						<Button onClick={increase}>+</Button>
+						<>
+							<Button onClick={decrease}>-</Button>
+							<Button onClick={increase}>+</Button>
+						</>
 						:
 						<Button onClick={addProduct}>Купить</Button>
 				}

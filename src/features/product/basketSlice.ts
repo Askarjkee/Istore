@@ -37,11 +37,33 @@ export const basketSlice = createSlice({
 			} else {
 				state.basket.push(action.payload);
 			}
+		},
+		decrease: (state, action) => {
+			const { id } = action.payload;
+			const productInBasket = state.basket.find(product => product.id === id);
+			if (productInBasket) {
+				if (productInBasket.inBasket > 1) {
+					state.basket = state.basket.map(product => {
+						if (product.id === id) {
+							if (product.inBasket > 1) {
+								return {
+									...product,
+									inBasket: product.inBasket - 1
+								}
+							}
+						}
+						return product
+					})
+				} else {
+					state.basket = state.basket.filter(product => product.id !== id)
+				}
+			}
 		}
 	}
 })
 
 export const {
 	addProduct,
-	increase
+	increase,
+	decrease
 } = basketSlice.actions;

@@ -9,7 +9,7 @@ import {
 	filterProductItemsByCategories,
 	filterProductItemsBySelect, Product
 } from "../../features/product/productSlice";
-import {addProduct, increase} from "../../features/product/basketSlice";
+import {addProduct, decrease, increase} from "../../features/product/basketSlice";
 import {Selector} from "../select/Select";
 import {ProductCard} from "./ProductCard";
 
@@ -88,6 +88,9 @@ export const ProductList = () => {
 	const inc = (item: Product) => {
 		dispatch(increase(item))
 	}
+	const dec = (item: Product) => {
+		dispatch(decrease(item))
+	}
 
 	const {basket} = useAppSelector(state => state.basket);
 	console.log(basket)
@@ -126,6 +129,7 @@ export const ProductList = () => {
 							<ProductCard
 								isItemInBasket={isItemInBasket}
 								increase={() => inc(product)}
+								decrease={() => dec(product)}
 								addProduct={() => addProductToBasket(product)}
 								rating={product.rating}
 								title={product.title}
