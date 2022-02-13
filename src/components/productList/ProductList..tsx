@@ -48,12 +48,6 @@ export const ProductCardWrapper = styled.div`
   }
 `
 
-const StyledLink = styled(Link)`
-  && {
-    text-decoration: none;
-  }
-`
-
 export const ProductList = () => {
 	const {isLoading, isError} = useAppSelector(state => state.product);
 	const dispatch = useAppDispatch();
@@ -82,6 +76,8 @@ export const ProductList = () => {
 	}, [catalogName])
 
 	// basket
+	const {basket} = useAppSelector(state => state.basket);
+
 	const addProductToBasket = (item: Product) => {
 		dispatch(addProduct(item))
 	}
@@ -92,8 +88,6 @@ export const ProductList = () => {
 		dispatch(decrease(item))
 	}
 
-	const {basket} = useAppSelector(state => state.basket);
-	console.log(basket)
 	if (isLoading) {
 		return <ProductSkeleton
 			value={12}
@@ -104,7 +98,6 @@ export const ProductList = () => {
 		return <h2>something wrong...</h2>
 	}
 
-	// TODO FIX button add to card
 	return (
 		<ProductListWrapper>
 			<ProductHeaderWrapper>
@@ -124,20 +117,30 @@ export const ProductList = () => {
 				{
 					filteredProducts.length > 0 && filteredProducts.map((product) => {
 						const isItemInBasket = basket.some(item => item.id === product.id);
-						return (
-							// <StyledLink key={item.title} to={`/card/${item.id}`}>
-							<ProductCard
-								isItemInBasket={isItemInBasket}
-								increase={() => inc(product)}
-								decrease={() => dec(product)}
-								addProduct={() => addProductToBasket(product)}
-								rating={product.rating}
-								title={product.title}
-								imageSrc={product.imgSrc}
-								price={product.price}
-								status={+product.quantity}/>
-							// </StyledLink>
-						)
+						if (isItemInBasket) {
+							const itemInBasket = basket.find(item => item.id === product.id);
+							return (
+								<ProductCard
+									key={product.id}
+									isItemInBasket={isItemInBasket}
+									inBasket={itemInBasket?.inBasket}
+									product={product}
+									increase={() => inc(product)}
+									decrease={() => dec(product)}
+									addProduct={() => addProductToBasket(product)}/>
+							)
+						} else {
+							return (
+								<ProductCard
+									key={product.id}
+									isItemInBasket={isItemInBasket}
+									product={product}
+									increase={() => inc(product)}
+									decrease={() => dec(product)}
+									addProduct={() => addProductToBasket(product)}/>
+							)
+						}
+
 					})
 				}
 			</ProductCardWrapper>
